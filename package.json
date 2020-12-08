@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "start-proxy": "ng serve --proxy-config proxy-conf.json",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -19,6 +20,9 @@
     "@angular/platform-browser": "~9.1.11",
     "@angular/platform-browser-dynamic": "~9.1.11",
     "@angular/router": "~9.1.11",
+    "@types/axios": "^0.14.0",
+    "ng-pentaho-dashboard": "^0.1.5",
+    "requirejs": "^2.3.6",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="http://192.168.99.101:8080/pentaho/plugin/pentaho-cdf-dd/api/renderer/cde-embed.js?userid=admin&amp;password=password"></script>
+</head>
+<body>
+    <strong>Embedding CDE Dashboards with RequireJS</strong>
+    <div id="content1"></div>
+    <script type="text/javascript">
+      require([
+        'dash!/public/MDuran/Dashboard_prueba.wcdf'
+      ], function(SampleDash) {
+        new SampleDash("content1").render();
+      });
+    </script>
+</body>
+</html>

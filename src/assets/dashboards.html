@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js">
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js">
+    </script> 
+    <script type="text/javascript" src="//pentaho.conicit.go.cr/pentaho/plugin/pentaho-cdf-dd/api/renderer/cde-embed.js?userid=guest&amp;password=guest&amp;secure=true&amp;port=443">
+    </script>
+</head>
+<body>
+<!-- Latest compiled and minified JS -->
+<style>
+    body {
+        width: 100%;
+    }
+    .panel-default>.panel-heading, .panel-default>a>.panel-heading {
+        color: #333;
+        background-color: #f5f5f5;
+        border-color: #ddd;
+    }
+</style>
+<div id="main-container" class="dash">
+    <div class="panel-group" id="accordion">
+        <div id="panelTemplate" class="panel panel-default invisible">
+            <a class="panel-header-collapse" href="#collapse0">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="panel-title-text">Prueba</span>
+                        <span class="pull-right glyphicon glyphicon-plus clickable_space"></span>
+                    </h4>
+                </div>
+            </a>
+            <div id="collapse0" class="panel-collapse collapse">
+                <div class="panel-body" id="content0"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    (
+        function () {
+            require.config({
+                paths: {
+                    jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min",
+                    jqueryui: "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min",
+                    bootstrap: "//maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min"
+                },
+                shim:{
+                    jquery: {
+                         exports: "$"
+                    },
+                    jqueryui: {
+                        deps: ["jquery"],
+                        exports: "$.ui"
+                    },
+                    bootstrap: {
+                        deps: ["cdf/lib/jquery"]
+                    }
+                }
+            });
+            require(["cdf/lib/jquery","bootstrap"], function($){
+                const charts = [
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-001.wcdf", title: "Grupos de edad y Nivel académico"},
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-002.wcdf", title: "Grupos de edad y Género"},
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-003.wcdf", title: "Sector, Áreas de las Ciencias, Género y Grupos de Edad"},
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-004.wcdf", title: "Instituciones, Sector y Grupos de edad"},
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-005.wcdf", title: "Áreas de las Ciencias y Género"},
+                    {dash: "dash!/public/CONICIT/Profesionales/CON-PRO-006.wcdf", title: "Instituciones, Unidades y Género (Top 10)"}
+                ];
+                const baseName = 'content';
+                const container = $('#main-container');
+                const panelTemplate = $("#panelTemplate");
+                for (let index = 0; index < charts.length; index++) {
+                    let $panel = panelTemplate.clone().removeClass('invisible').removeAttr("id");
+                    $panel.find(".panel-header-collapse").attr('href', '#collapse' + (index + 1) ).find(".panel-title-text").text( charts[index].title );
+                    $panel.find(".panel-collapse").attr('id', 'collapse' + (index + 1) );
+                    if (index == 0 ){
+                        $panel.find(".panel-collapse").addClass('in');
+                        $panel.find(".glyphicon").removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                    }
+                    $panel.find(".panel-body").attr('id', baseName + (index + 1));
+                    container.append( $panel );
+                }
+                let loadDashboard = function(chart, index) {
+                    require([chart.dash], function (embedDashboard) {
+                         ( new embedDashboard( baseName + (index + 1) ) ).render();
+                    });
+                };
+                $(document).ready(function() {
+                    loadDashboard(charts[0], 0);
+                });
+                $(".panel-header-collapse").on("click", function(e){
+                    $(e.currentTarget).parent("div").find(".collapse").collapse("toggle");
+                });
+                $(".panel").on("shown.bs.collapse", function(e){
+                    if (! $(e.currentTarget).find(".panel-body").html() ){
+                        let idxDash = parseInt($(e.currentTarget).find(".panel-body").attr("id").replace("content", "")) - 1;
+                        loadDashboard(charts[idxDash], idxDash);
+                    }
+                    $(this).find(".glyphicon").removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                    $("html, body").scrollTop( $(e.currentTarget).offset().top - 140 );
+                }).on("hidden.bs.collapse", function(e){
+                    $(this).find(".glyphicon").removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                    $("html, body").scrollTop( $(e.currentTarget).offset().top - 140 );
+                });
+            });
+        }
+    )();
+</script>
+</body>
+</html>
