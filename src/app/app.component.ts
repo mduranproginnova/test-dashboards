@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-    this.selectCustumer = ['Petit Auto'];
+    this.selectCustumer = [];
   }
 
   ngOnChanges() {
