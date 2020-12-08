@@ -15,6 +15,7 @@ export class PentahoDashboardComponent implements OnInit, OnChanges {
   @Input() additionalDashboards: string[] = [];
   @Input() setDefaults: boolean;
   @Input() externalHtmlId: any[] = [];
+  @Input() hasParams = false;
 
   constructor() { }
 
@@ -35,10 +36,16 @@ export class PentahoDashboardComponent implements OnInit, OnChanges {
       dashboardRender = this.setDashboardPathWithAddDash();
     } else */
     // if (this.params.length > 0) {
-    dashboardRender = this.setDashboardPathWithExternalElement();
+      // dashboardRender = this.setDashboardPathWithExternalElement();
     // } else {
       // dashboardRender = this.setDashboardPath();
     // }
+
+    if (this.hasParams) {
+      dashboardRender = this.setDashboardPathWithExternalElement();
+    } else {
+      dashboardRender = this.setDashboardPath();
+    }
     const range = document.createRange();
     range.selectNode(document.getElementsByTagName('BODY')[0]);
     const documentFragment = range.createContextualFragment(dashboardRender);
@@ -50,12 +57,12 @@ export class PentahoDashboardComponent implements OnInit, OnChanges {
    * la dirección y el id del div
    */
   private setDashboardPath() {
-    // document.body.removeChild(document.getElementsByTagName('script')[285]);
     return `<script id="script1" type="text/javascript">
     require([
     'dash!/${this.dashboardPath}'],
     function(SampleDash) {
       var dashboardInstance = new SampleDash("${this.id}");
+      // dashboardInstance.setParameter("getValue", "${this.params[0]}");
       dashboardInstance.render();
     });
     </script>`;
@@ -68,11 +75,7 @@ export class PentahoDashboardComponent implements OnInit, OnChanges {
     require([
     'dash!/${this.dashboardPath}'],
     function(SampleDash) {
-      // console.log('SampleDash');
-      // console.log(SampleDash.toString());
       var dashboardInstance = new SampleDash("${this.id}");
-      console.log('dashboardInstance');
-      console.log(dashboardInstance.toString());
       dashboardInstance.render();
       ${this.setFireChangeParams()}
     });
@@ -87,13 +90,9 @@ export class PentahoDashboardComponent implements OnInit, OnChanges {
       result += `
       var htmlElement${i} = document.getElementById("${this.externalHtmlId[i]}");
       htmlElement${i}.addEventListener("change", function() {
-        console.log(this.value);
         dashboardInstance.fireChange("${element}", this.value);
       });
-      ${this.setDefault(element, i)}
-      `;
-      // result += `dashboardInstance.setParameter("${element}", "${this.params[i]}");`;
-      // ${this.setDefault(i)};
+      ${this.setDefault(element, i)}`;
     });
     return result;
   }
