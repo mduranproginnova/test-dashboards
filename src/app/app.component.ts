@@ -9,6 +9,7 @@ export class AppComponent implements OnInit, OnChanges {
 
   public params: any[] = [];
   public selectCustumer: string[];
+  private vari: string;
 
   constructor() { }
 
@@ -22,5 +23,9 @@ export class AppComponent implements OnInit, OnChanges {
   public onChangeSelect(value) {
     this.selectCustumer = [];
     this.selectCustumer.push(value);
+  }
+
+  private fun() {
+    console.log("do something");
   }
 }
